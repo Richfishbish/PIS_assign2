@@ -1,0 +1,105 @@
+Processing 
+
+
+//Serial
+
+import processing.serial.*;
+Serial mySerial; //cates local serial object from serial; library
+
+String myString = null; //variable that collects serial data
+int nl = 10; //ASCII code for carrage return in serial
+float myVal; //float for storing converted ascii serial data
+
+//OSC
+
+import oscP5.*;
+OscP5 oscP5;
+
+float triggerVal;
+
+void setup(){
+  
+  //OSC  
+  
+  // set size of display window
+  size(1000,1000);
+  //disable outlines
+  background (triggerVal);
+  noStroke();
+  //set framerate
+  frameRate(30);
+  
+  /* start oscP5, listening for incoming messages at port 12000 */
+  oscP5 = new OscP5(this,7400);
+  
+  //Serial
+  
+    //link processing to serial port
+  String myPort = Serial.list() [3]; //find correct serial port
+  mySerial = new Serial(this, myPort, 9600); // initialise
+}
+
+void draw(){
+  
+  // Serial 
+  
+    while (mySerial.available() > 100) {
+    myString = mySerial.readStringUntil(nl); // strip the data of the serial port
+    if (myString != null) {
+     // background (0,0,0,100);
+      myVal = float(myString); //takes data from serial, turns into numbers
+
+      myVal = myVal/100 *height;
+
+      rectMode(CENTER);
+      fill (0);
+      rect(width/2, height-(myVal), 1000, 1000);
+    }//do somethign
+  } // do saomething
+  
+  
+  //background(240,240,240);
+  //if (mouseX > 100) {
+    //fill(255, 255, 255, 100);
+  
+ //if (mouseX < 99)
+   // fill(255,0,0);  
+  
+  //OSC
+     //fill(0,255,0);
+     if (myVal >100){
+     fill(255, 255, 255, 100);
+     ellipse(random(triggerVal*300), random(triggerVal*1000), 10*triggerVal, 10*triggerVal);
+   } else if (myVal < 99) {
+     fill(0,255,0,100);
+       ellipse(random(triggerVal*300), random(triggerVal*1000), 10*triggerVal, 10*triggerVal);
+   }
+  //ellipse(random(triggerVal*300), random(triggerVal*1000), 10*triggerVal, 10*triggerVal);
+  ellipse(random(triggerVal*1000), random(triggerVal*1000), 10*triggerVal, 10*triggerVal);
+  ellipse(random(triggerVal*1000), 600, 10*triggerVal, 10*triggerVal);
+  ellipse(random(triggerVal*1000), 900, 10*triggerVal, 10*triggerVal);
+  ellipse(random(triggerVal*1000), 100, 10*triggerVal, 10*triggerVal);
+   
+   
+  fill(0,0,255, 100);
+  ellipse(random(triggerVal*1000), 700, 10*triggerVal, 10*triggerVal);
+  ellipse(random(triggerVal*1000), 350, 30*triggerVal, 30*triggerVal);
+  ellipse(random(triggerVal*1000),random(triggerVal*1000) , 30*triggerVal, 30*triggerVal);
+
+  fill(255,140,0,70);
+  ellipse(random(triggerVal*1000), random(triggerVal*1000), 10*triggerVal, 10*triggerVal);
+  ellipse(random(triggerVal*1000), random(triggerVal*1000), 10*triggerVal, 10*triggerVal);
+  ellipse(random(triggerVal*1000), 800, 10*triggerVal, 10*triggerVal);
+  ellipse(random(triggerVal*1000), 200, 10*triggerVal, 10*triggerVal);
+  ellipse(random(triggerVal*1000), 500, 10*triggerVal, 10*triggerVal);
+ 
+}   
+
+void oscEvent(OscMessage theOscMessage) {
+  float value = theOscMessage.get(0).floatValue();
+  if(theOscMessage.checkAddrPattern("/trigger")){
+   triggerVal = value;
+    }
+}
+
+
